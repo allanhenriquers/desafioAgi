@@ -6,13 +6,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.cliente</groupId>
-    <artifactId>proposta-cliente</artifactId>
+    <artifactId>ms-cadastro-clientes</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>proposta-cliente</name>
+    <name>ms-cadastro-clientes</name>
     <description>Microserviço para gestao  de clientes</description>
     <packaging>jar</packaging>
 
     <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <java.version>21</java.version>
         <spring.boot.version>3.2.5</spring.boot.version>
         <springdoc.version>2.1.0</springdoc.version>
@@ -93,6 +95,12 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

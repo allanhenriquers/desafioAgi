@@ -21,18 +21,13 @@ public class ClienteController {
     @PostMapping
     public ResponseEntity<Cliente> criarCliente(@RequestBody @Valid Cliente cliente) {
         Cliente criado = clienteService.cadastrar(cliente);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{cpf}")
-                .buildAndExpand(criado.getCpf())
-                .toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{cpf}").buildAndExpand(criado.getCpf()).toUri();
         return ResponseEntity.created(location).body(criado);
     }
 
     @GetMapping("/{cpf}")
     public ResponseEntity<Cliente> buscarCliente(@PathVariable String cpf) {
-        return clienteService.buscarPorCpf(cpf)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return clienteService.buscarPorCpf(cpf).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{cpf}")

@@ -17,7 +17,7 @@ server:
 # Configuração para o cliente Feign acessar o serviço de cadastro
 customer:
   api:
-    url: http://proposta-cliente:8080
+    url: http://ms-cadastro-clientes:8080
 
 # Configuração do Swagger/OpenAPI (opcional)
 springdoc:

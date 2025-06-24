@@ -5,12 +5,14 @@
 <modelVersion>4.0.0</modelVersion>
 
 <groupId>org.proposta</groupId>
-<artifactId>proposta-seguro</artifactId>
+<artifactId>ms-contratacao-seguros</artifactId>
 <version>0.0.1-SNAPSHOT</version>
-<name>proposta-seguro</name>
+<name>ms-contratacao-seguros</name>
 <packaging>jar</packaging>
 
 <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
     <java.version>21</java.version>
     <spring.boot.version>3.2.5</spring.boot.version>
     <springdoc.version>2.1.0</springdoc.version>
@@ -102,6 +104,24 @@
         <artifactId>mockito-junit-jupiter</artifactId>
         <version>5.2.0</version>
         <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
 </dependencies>
 
