@@ -1,16 +1,18 @@
 package org.cadastro.cliente.service;
 
+import org.cadastro.cliente.dto.ClienteRequestDTO;
+import org.cadastro.cliente.dto.ClienteResponseDTO;
 import org.cadastro.cliente.excecao.ClienteExistenteException;
 import org.cadastro.cliente.domain.model.Cliente;
 
 import java.util.Optional;
 
 public interface ClienteService {
-    Cliente cadastrar(Cliente cliente) throws ClienteExistenteException;
+    ClienteResponseDTO cadastrar(ClienteRequestDTO cliente) throws ClienteExistenteException;
 
-    Cliente atualizar(String id, Cliente cliente);
+    ClienteResponseDTO atualizar(String cpf, ClienteRequestDTO cliente);
 
-    Optional<Cliente> buscarPorCpf(String id);
+    Optional<ClienteResponseDTO> buscarPorCpf(String cpf);
 
-    void remover(String id);
+    void remover(String cpf);
 }

@@ -3,9 +3,11 @@ package org.cadastro.cliente.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cadastro.cliente.domain.model.Cliente;
 import org.cadastro.cliente.domain.model.Endereco;
+import org.cadastro.cliente.dto.ClienteRequestDTO;
+import org.cadastro.cliente.dto.ClienteResponseDTO;
+import org.cadastro.cliente.dto.EnderecoDTO;
 import org.cadastro.cliente.service.ClienteService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,6 +19,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,19 +39,20 @@ class ClienteControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private Endereco getEndereco() {
-        return new Endereco("Rua A", "123", "Apto 1", "Cidade X", "SP", "12345678");
+    private EnderecoDTO getEndereco() {
+        return new EnderecoDTO("Rua A", "123", "Apto 1", "Cidade X", "SP", "12345678");
     }
 
-    private Cliente getCliente() {
-        return new Cliente("12345678900", "Allan", LocalDate.of(1990, 1, 1), "999999999", getEndereco());
+    private ClienteRequestDTO getClienteRequestDTO() {
+        return new ClienteRequestDTO("12345678900", "Allan", LocalDate.of(1990, 1, 1), "999999999", getEndereco());
     }
 
     @Test
     void deveCriarClienteComSucesso() throws Exception {
-        Cliente cliente = getCliente();
+        ClienteRequestDTO cliente = getClienteRequestDTO();
+        ClienteResponseDTO clienteResponseDTO = getClienteResponseDTO(cliente);
 
-        Mockito.when(clienteService.cadastrar(any(Cliente.class))).thenReturn(cliente);
+        when(clienteService.cadastrar(any(ClienteRequestDTO.class))).thenReturn(clienteResponseDTO);
 
         mockMvc.perform(post("/clientes")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -59,18 +63,19 @@ class ClienteControllerTest {
 
     @Test
     void deveBuscarClientePorCpf() throws Exception {
-        Cliente cliente = getCliente();
+        ClienteRequestDTO clienteRequestDTO = getClienteRequestDTO();
+        ClienteResponseDTO clienteResponseDTO = getClienteResponseDTO(clienteRequestDTO);
 
-        Mockito.when(clienteService.buscarPorCpf(cliente.getCpf())).thenReturn(Optional.of(cliente));
+        when(clienteService.buscarPorCpf(clienteRequestDTO.getCpf())).thenReturn(Optional.of(clienteResponseDTO));
 
-        mockMvc.perform(get("/clientes/" + cliente.getCpf()))
+        mockMvc.perform(get("/clientes/" + clienteRequestDTO.getCpf()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nome").value(cliente.getNome()));
+                .andExpect(jsonPath("$.nome").value(clienteRequestDTO.getNome()));
     }
 
     @Test
     void deveRetornar404SeClienteNaoEncontrado() throws Exception {
-        Mockito.when(clienteService.buscarPorCpf("000")).thenReturn(Optional.empty());
+        when(clienteService.buscarPorCpf("000")).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/clientes/000"))
                 .andExpect(status().isNotFound());
@@ -78,9 +83,10 @@ class ClienteControllerTest {
 
     @Test
     void deveAtualizarCliente() throws Exception {
-        Cliente cliente = getCliente();
-        Mockito.when(clienteService.atualizar(eq(cliente.getCpf()), any(Cliente.class)))
-                .thenReturn(cliente);
+        ClienteRequestDTO cliente = getClienteRequestDTO();
+        ClienteResponseDTO clienteResponseDTO = getClienteResponseDTO(cliente);
+        when(clienteService.atualizar(eq(cliente.getCpf()), any(ClienteRequestDTO.class)))
+                .thenReturn(clienteResponseDTO);
 
         mockMvc.perform(put("/clientes/" + cliente.getCpf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,10 +95,17 @@ class ClienteControllerTest {
                 .andExpect(jsonPath("$.cpf").value(cliente.getCpf()));
     }
 
+    private static ClienteResponseDTO getClienteResponseDTO(ClienteRequestDTO cliente) {
+        return ClienteResponseDTO.builder()
+                .cpf(cliente.getCpf())
+                .nome("Allan")
+                .build();
+    }
+
     @Test
     void deveRemoverCliente() throws Exception {
         mockMvc.perform(delete("/clientes/12345678900"))
                 .andExpect(status().isNoContent());
-        Mockito.verify(clienteService).remover("12345678900");
+        verify(clienteService).remover("12345678900");
     }
 }
