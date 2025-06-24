@@ -1,8 +1,18 @@
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
+
+WORKDIR /app
+
+COPY pom.xml .
+
+COPY src ./src
+
+RUN mvn clean package -DskipTests
+
 FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /app
 
-COPY target/proposta-cliente-0.0.1-SNAPSHOT.jar apiCliente.jar
+COPY --from=builder /app/target/*.jar apiCliente.jar
 
 EXPOSE 8080
 
