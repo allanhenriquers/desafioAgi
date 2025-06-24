@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://insurance-db:5432/insurancedb
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  profiles:
+    active: default
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8081
+
+# Configuração para o cliente Feign acessar o serviço de cadastro
+customer:
+  api:
+    url: http://proposta-cliente:8080
+
+# Configuração do Swagger/OpenAPI (opcional)
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

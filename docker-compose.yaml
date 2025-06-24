@@ -1,0 +1,61 @@
+#version: '3.8'
+
+services:
+  customer-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: customerdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - customer-db-data:/var/lib/postgresql/data
+
+  insurance-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: insurancedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - insurance-db-data:/var/lib/postgresql/data
+
+  proposta-cliente:
+    build: ./proposta-cliente
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://customer-db:5432/customerdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - customer-db
+
+  proposta-seguro:
+    build: ./proposta-seguro
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://insurance-db:5432/insurancedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      CUSTOMER_SERVICE_URL: http://proposta-cliente:8080
+    depends_on:
+      - insurance-db
+      - proposta-cliente
+
+networks:
+  microservices-network:
+    driver: bridge
+
+volumes:
+  customer-db-data:
+  insurance-db-data:
