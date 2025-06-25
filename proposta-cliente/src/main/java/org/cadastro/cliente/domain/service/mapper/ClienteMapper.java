@@ -15,8 +15,5 @@ public interface ClienteMapper {
     Cliente mapToCliente(ClienteRequestDTO dto);
 
     Endereco mapEndereco(EnderecoDTO dto);
-
-    EnderecoDTO mapEndereco(Endereco endereco);
-
 }
 

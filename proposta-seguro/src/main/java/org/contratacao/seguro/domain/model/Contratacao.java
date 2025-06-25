@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "contratacoes")
 @Data
-@NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
 public class Contratacao {
 

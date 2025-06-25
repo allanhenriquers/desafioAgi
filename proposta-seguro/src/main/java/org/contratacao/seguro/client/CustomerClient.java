@@ -1,6 +1,6 @@
 package org.contratacao.seguro.client;
 
-import org.contratacao.seguro.client.model.Cliente;
+import org.contratacao.seguro.domain.model.Cliente;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

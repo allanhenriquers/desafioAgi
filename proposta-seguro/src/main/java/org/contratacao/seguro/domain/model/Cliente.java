@@ -1,10 +1,14 @@
-package org.contratacao.seguro.client.model;
+package org.contratacao.seguro.domain.model;
 
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Cliente {
 
     private String cpf;

@@ -1,10 +1,11 @@
 package org.contratacao.seguro.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.contratacao.seguro.domain.model.Contratacao;
+import org.contratacao.seguro.application.service.SeguroService;
 import org.contratacao.seguro.domain.model.Simulacao;
 import org.contratacao.seguro.domain.model.TipoSeguro;
-import org.contratacao.seguro.service.SeguroService;
+import org.contratacao.seguro.dto.ContratacaoResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,8 +27,8 @@ public class SeguroController {
     }
 
     @PostMapping("/contratar")
-    public ResponseEntity<Contratacao> contratarSeguro(@RequestParam String cpf, @RequestParam TipoSeguro tipo) {
-        Contratacao contratacao = seguroService.contratarSeguro(cpf, tipo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(contratacao);
+    public ResponseEntity<ContratacaoResponseDTO> contratarSeguro(@RequestParam String cpf, @RequestParam TipoSeguro tipo) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(seguroService.contratarSeguro(cpf, tipo));
     }
 }

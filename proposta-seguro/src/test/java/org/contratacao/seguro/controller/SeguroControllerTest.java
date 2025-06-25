@@ -1,76 +1,98 @@
 package org.contratacao.seguro.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.contratacao.seguro.domain.model.Contratacao;
+import org.contratacao.seguro.application.service.SeguroService;
 import org.contratacao.seguro.domain.model.Simulacao;
 import org.contratacao.seguro.domain.model.TipoSeguro;
-import org.contratacao.seguro.service.SeguroService;
+import org.contratacao.seguro.dto.ContratacaoResponseDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.eq;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@WebMvcTest(SeguroController.class)
+@ExtendWith(MockitoExtension.class)
 class SeguroControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private SeguroService seguroService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @InjectMocks
+    private SeguroController seguroController;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        seguroController = new SeguroController(seguroService);
+    }
 
     @Test
-    void deveSimularSeguroComSucesso() throws Exception {
-        // Arrange
-        String cpf = "12345678900";
+    void deveRetornarSimulacaoComStatusOkQuandoSimularSeguro() {
+        String cpf = "12345678901";
         TipoSeguro tipo = TipoSeguro.BRONZE;
-        Simulacao simulacao = new Simulacao(cpf, tipo, BigDecimal.valueOf(200.0));
+        Simulacao simulacaoMock = new Simulacao(cpf, tipo, BigDecimal.valueOf(1500.00));
 
-        Mockito.when(seguroService.simularSeguro(eq(cpf), eq(tipo))).thenReturn(simulacao);
+        when(seguroService.simularSeguro(cpf, tipo)).thenReturn(simulacaoMock);
 
-        // Act + Assert
-        mockMvc.perform(post("/seguros/simular")
-                        .param("cpf", cpf)
-                        .param("tipo", tipo.name())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.clienteCpf").value(cpf))
-                .andExpect(jsonPath("$.tipo").value(tipo.name()))
-                .andExpect(jsonPath("$.valor").value(200.0));
+        ResponseEntity<Simulacao> response = seguroController.simularSeguro(cpf, tipo);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(simulacaoMock, response.getBody());
+        verify(seguroService, times(1)).simularSeguro(cpf, tipo);
     }
 
     @Test
-    void deveContratarSeguroComSucesso() throws Exception {
-        // Arrange
-        String cpf = "12345678900";
+    void deveRetornarContratacaoResponseComStatusCreatedQuandoContratarSeguro() {
+        String cpf = "12345678901";
         TipoSeguro tipo = TipoSeguro.PRATA;
-        LocalDate dataContratacao = LocalDate.now();
-        Contratacao contratacao = new Contratacao(UUID.randomUUID(), cpf, tipo, dataContratacao);
+        ContratacaoResponseDTO responseDTO = new ContratacaoResponseDTO(cpf, tipo, LocalDate.now());
 
-        Mockito.when(seguroService.contratarSeguro(eq(cpf), eq(tipo))).thenReturn(contratacao);
+        when(seguroService.contratarSeguro(cpf, tipo)).thenReturn(responseDTO);
 
-        // Act + Assert
-        mockMvc.perform(post("/seguros/contratar")
-                        .param("cpf", cpf)
-                        .param("tipo", tipo.name())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.clienteCpf").value(cpf))
-                .andExpect(jsonPath("$.tipo").value(tipo.name()))
-                .andExpect(jsonPath("$.dataContratacao").value(dataContratacao.toString()));
+        ResponseEntity<ContratacaoResponseDTO> response = seguroController.contratarSeguro(cpf, tipo);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(responseDTO, response.getBody());
+        verify(seguroService, times(1)).contratarSeguro(cpf, tipo);
     }
+
+       @Test
+    void deveLancarExcecaoQuandoSimularSeguroComCpfInvalido() {
+        String cpf = "cpf-invalido";
+        TipoSeguro tipo = TipoSeguro.OURO;
+
+        when(seguroService.simularSeguro(cpf, tipo)).thenThrow(new IllegalArgumentException("CPF inválido"));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            seguroController.simularSeguro(cpf, tipo);
+        });
+
+        assertEquals("CPF inválido", exception.getMessage());
+        verify(seguroService, times(1)).simularSeguro(cpf, tipo);
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoContratarSeguroComTipoNulo() {
+        String cpf = "12345678901";
+        TipoSeguro tipo = null;
+
+        when(seguroService.contratarSeguro(cpf, tipo)).thenThrow(new NullPointerException("Tipo de seguro não pode ser nulo"));
+
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> {
+            seguroController.contratarSeguro(cpf, tipo);
+        });
+
+        assertEquals("Tipo de seguro não pode ser nulo", exception.getMessage());
+        verify(seguroService, times(1)).contratarSeguro(cpf, tipo);
+    }
+
 }
