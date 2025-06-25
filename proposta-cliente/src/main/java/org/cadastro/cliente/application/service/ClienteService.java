@@ -1,9 +1,8 @@
-package org.cadastro.cliente.domain.service;
+package org.cadastro.cliente.application.service;
 
 import org.cadastro.cliente.dto.ClienteRequestDTO;
 import org.cadastro.cliente.dto.ClienteResponseDTO;
-import org.cadastro.cliente.excecao.ClienteExistenteException;
-import org.cadastro.cliente.domain.model.Cliente;
+import org.cadastro.cliente.infra.ClienteExistenteException;
 
 import java.util.Optional;
 

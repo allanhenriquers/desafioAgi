@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cadastro.cliente.dto.ClienteRequestDTO;
 import org.cadastro.cliente.dto.ClienteResponseDTO;
 import org.cadastro.cliente.dto.EnderecoDTO;
-import org.cadastro.cliente.domain.service.ClienteService;
+import org.cadastro.cliente.application.service.ClienteService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

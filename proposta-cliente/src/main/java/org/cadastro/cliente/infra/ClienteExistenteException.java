@@ -1,4 +1,4 @@
-package org.cadastro.cliente.excecao;
+package org.cadastro.cliente.infra;
 
 public class ClienteExistenteException extends RuntimeException {
     public ClienteExistenteException(String message) {

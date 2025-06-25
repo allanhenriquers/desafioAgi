@@ -1,6 +1,7 @@
-package org.cadastro.cliente.domain.port;
+package org.cadastro.cliente.infra;
 
 import org.cadastro.cliente.domain.model.Cliente;
+import org.cadastro.cliente.domain.port.ClienteRepositoryPort;
 import org.cadastro.cliente.domain.repository.ClienteRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,21 +18,21 @@ public class ClienteRepositoryAdapter implements ClienteRepositoryPort {
 
     @Override
     public boolean existsByCpf(String cpf) {
-        return false;
+        return repository.existsById(cpf);
     }
 
     @Override
     public Cliente save(Cliente cliente) {
-        return null;
+        return repository.save(cliente);
     }
 
     @Override
     public Optional<Cliente> findByCpf(String cpf) {
-        return Optional.empty();
+        return repository.findById(cpf);
     }
 
     @Override
     public void deleteByCpf(String cpf) {
-
+        repository.deleteById(cpf);
     }
 }

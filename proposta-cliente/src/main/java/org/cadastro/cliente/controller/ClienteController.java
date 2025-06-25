@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.cadastro.cliente.dto.ClienteRequestDTO;
 import org.cadastro.cliente.dto.ClienteResponseDTO;
-import org.cadastro.cliente.domain.service.ClienteService;
+import org.cadastro.cliente.application.service.ClienteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,10 +22,7 @@ public class ClienteController {
     @PostMapping
     public ResponseEntity<ClienteResponseDTO> criarCliente(@RequestBody @Valid ClienteRequestDTO clienteRequest) {
         ClienteResponseDTO criado = clienteService.cadastrar(clienteRequest);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{cpf}")
-                .buildAndExpand(criado.getCpf())
-                .toUri();
+        URI location = getLocation(criado);
         return ResponseEntity.created(location).body(criado);
     }
 
@@ -46,5 +43,12 @@ public class ClienteController {
     public ResponseEntity<Void> deletarCliente(@PathVariable String cpf) {
         clienteService.remover(cpf);
         return ResponseEntity.noContent().build();
+    }
+
+    private static URI getLocation(ClienteResponseDTO criado) {
+        return ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{cpf}")
+                .buildAndExpand(criado.getCpf())
+                .toUri();
     }
 }
