@@ -2,11 +2,12 @@ package org.cadastro.cliente.service.impl;
 
 import org.cadastro.cliente.domain.model.Cliente;
 import org.cadastro.cliente.domain.repository.ClienteRepository;
+import org.cadastro.cliente.domain.service.impl.ClienteServiceImpl;
 import org.cadastro.cliente.dto.ClienteRequestDTO;
 import org.cadastro.cliente.dto.ClienteResponseDTO;
 import org.cadastro.cliente.excecao.ClienteExistenteException;
 import org.cadastro.cliente.excecao.ClienteNaoEncontradoException;
-import org.cadastro.cliente.service.mapper.ClienteMapper;
+import org.cadastro.cliente.domain.service.mapper.ClienteMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;

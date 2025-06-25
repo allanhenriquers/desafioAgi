@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.cadastro.cliente.dto.ClienteRequestDTO;
 import org.cadastro.cliente.dto.ClienteResponseDTO;
-import org.cadastro.cliente.service.ClienteService;
+import org.cadastro.cliente.domain.service.ClienteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

@@ -1,4 +1,4 @@
-package org.cadastro.cliente.service.mapper;
+package org.cadastro.cliente.domain.service.mapper;
 
 import org.cadastro.cliente.domain.model.Cliente;
 import org.cadastro.cliente.domain.model.Endereco;

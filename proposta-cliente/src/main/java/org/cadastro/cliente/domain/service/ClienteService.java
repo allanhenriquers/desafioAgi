@@ -1,4 +1,4 @@
-package org.cadastro.cliente.service;
+package org.cadastro.cliente.domain.service;
 
 import org.cadastro.cliente.dto.ClienteRequestDTO;
 import org.cadastro.cliente.dto.ClienteResponseDTO;
